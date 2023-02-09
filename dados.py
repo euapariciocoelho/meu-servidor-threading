@@ -64,6 +64,7 @@ def Linha(cpf):
 def Update_saldo(valor, onde):
     con = mysql.connector.connect(host='localhost', db='banco', user='root', password='123456')
     cursor = con.cursor()
+    
     cursor.execute("UPDATE teste1 SET saldo = " + str(valor) + "WHERE id = " + str(onde))
                     
     con.commit()
