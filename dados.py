@@ -156,6 +156,11 @@ def Transacoes(cpf):
     cursor.execute("SELECT * FROM transacoes")
 
     tupla = ''
+    '''tulpa é uma variavel(str) que será concatenada com todas as strings salvas na tabela transacoes.
+    
+        Durante o for, a cada interação é concatenado uma string com uma "," (virgula) para quando a string
+        ser retornada para a tela do cliente o algoritmo "fatiar" a string por cada virgula, utilizando split.
+    '''
     for c in cursor:
         if cpf in c:
             tupla += c[2]

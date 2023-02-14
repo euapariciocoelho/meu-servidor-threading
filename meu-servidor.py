@@ -10,14 +10,6 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 import datetime
 from datetime import date
-from tela_inicial import Tela_inicial
-from tela_cadastro import Tela_cadastro
-from tela_saque import Tela_saque
-from tela_extrato import Tela_extrato
-from tela_depositar import Tela_depositar
-from tela_transacoes import Tela_transacoes
-from tela_transferencia import Tela_transferencia
-from login_efetuado import Login_efetuado
 from dados import Verifica_se_existe, Armazenar, Linha, Update_saldo, Transacoes, Verificar_login
 from dados import *
 
@@ -321,8 +313,9 @@ class ClientThread(threading.Thread):
                         cpf = recebe
                         dados_cpf = Transacoes(cpf)
                         
-                    
+                        # verifica se existe transacoes na conta do cliente
                         if dados_cpf != '':
+                            # envia uma string com todas as transacoes de um cliente
                             enviar = str(dados_cpf)
                             self.csocket.send(enviar.encode())
                         else:
@@ -367,7 +360,7 @@ class ClientThread(threading.Thread):
         print("Client at ", clientAddress , " disconnected...")
 
 if __name__ == '__main__':
-    LOCALHOST = '10.180.46.151'
+    LOCALHOST = '192.168.1.4'
     PORT = 1235
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADOR, 1)
