@@ -31,18 +31,16 @@ class ClientThread(threading.Thread):
         print('Nova conexao: ', clientAddress)
     
     def run(self):
-        #self.name = self.csocket.recv(1024).decode()
-        #print(self.name, " se conectou!")
         msg = ''
         flag = 0
         while True:
-            # data = self.csocket.recv(1024)
+            
             data = self.csocket.recv(1024)
             recebe = data.decode()
             if recebe == 'bye':
                 break
             print("from ", self.name+": ",recebe)
-            # recebe = con.recv(1024)
+           
     
             if recebe == 'entrar' or flag == 1:
                 if recebe == 'entrar':
@@ -121,7 +119,7 @@ class ClientThread(threading.Thread):
                         saldo = recebe
                         flag = 0
                         if Verifica_se_existe(cpf):
-                            enviar = 'True' # eh p ja existe e nao pode cadastrar de novo
+                            enviar = 'True' 
                             self.csocket.send(enviar.encode())
                         else:
                             Armazenar(nome, cpf, endereco, nascimento, senha, limite, saldo)
@@ -290,10 +288,10 @@ class ClientThread(threading.Thread):
                 
                     cpf = ''
                     flag = 6
-                    #enviar = 'extrato recebido'
+                   
                     
                     self.csocket.send(enviar.encode())
-                    #con.send(enviar.encode())
+                   
                 else:
                     if cpf == '':
                         flag = 0
@@ -312,14 +310,14 @@ class ClientThread(threading.Thread):
                             
                             enviar = 'None'
                             self.csocket.send(enviar.encode())
-                            #con.send(enviar.encode())
+                            
             elif recebe == 'sair':
                 enviar = 'sair'
                 self.csocket.send(enviar.encode())
         print("Client at ", clientAddress , " disconnected...")
 
 if __name__ == '__main__':
-    LOCALHOST = '10.180.43.222'
+    LOCALHOST = ' 10.180.46.151'
     PORT = 1235
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADOR, 1)
