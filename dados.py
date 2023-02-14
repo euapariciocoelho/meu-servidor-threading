@@ -100,8 +100,7 @@ def Transacoes(cpf):
 
     return tupla # retornando apenas a coluna transacoes na tabela transacoes
 
-def Entrar():
-    print('entrou')
+
 
 
    

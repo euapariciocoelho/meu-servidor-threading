@@ -27,22 +27,45 @@ class ClientThread(threading.Thread):
     def __init__(self, clientAddress, clientsocket):
         threading.Thread.__init__(self)
         self.csocket = clientsocket
-        #self.nome = ''
         print('Nova conexao: ', clientAddress)
     
     def run(self):
+        ''' Recebe as mensagens do cliente e verifica qual opção foi escolhida. 
+        
+            variavel msg(str) armazena a mensagem. flag(int) auxilia para manter recebimento de mensagens na opção desejada.
+        '''
         msg = ''
         flag = 0
         while True:
-            
+            ''' Em cada volta do laço ele recebe uma menagem do cliente. A mensagem armazena na variavel recebe(str) '''
             data = self.csocket.recv(1024)
             recebe = data.decode()
+
+            ''' Enquanto o cliente enviar mensagens diferentes de bye sua conexao permace ativa '''
             if recebe == 'bye':
                 break
+            ''' Caso a mensagem não encerre a conexao, a mensagem recebida é exibida '''
             print("from ", self.name+": ",recebe)
            
-    
+            ''' A sequencia de if/elif verifica a mensagem recebida e o flag '''
             if recebe == 'entrar' or flag == 1:
+
+                ''' Caso a variavel recebe(str) seja "entrar" ele afirma a condição e entra no if.
+
+                    Em seguida informa a mensagem recebida. E na variavel enviar(str) recebe a mensagem 
+                    que será retornada para o cliente.
+
+                    As variaveis cpf(str) e senha(str) recebe um "vazio" para atender as condições de entrada nos if
+                    para realizar o recebimento dos dados do cliente. 
+
+                    O flag de cada uma das funções tem uma numeração indicando qual opção está sendo usada.
+                    "entrar" tem a numeração 1 e as outras seguem a contagem até o fim das opções disponiveis.
+
+                    No fim a flag recebe 0 para não ocorrer bugs.
+
+                    Isso ocorre para todas as opções (entrar, cadastrar, sacar, depositar, transferir, transacoes, extrato)
+
+                '''
                 if recebe == 'entrar':
                 
                     print('mensagem recebida: '+ recebe)
@@ -118,11 +141,21 @@ class ClientThread(threading.Thread):
                         print('mensagem recebida: '+ recebe)
                         saldo = recebe
                         flag = 0
+                        ''' A função "Verifica_se_existe" recebe o cpf(str) e faz a verificação no banco de dados
+                            se aquele cpf já está sendo usado.
+
+                            Caso a mensagem retornada seja "True" é porque cpf já está cadastrado, "False" não está cadastrado.
+                        '''
                         if Verifica_se_existe(cpf):
                             enviar = 'True' 
                             self.csocket.send(enviar.encode())
                         else:
+                            ''' Após receber todos os dados é chamado a função "Armazenar" para gravar dados no banco de dados'''
                             Armazenar(nome, cpf, endereco, nascimento, senha, limite, saldo)
+
+                            ''' Historico da conta é armazenado em outra tabela no banco de dados, portanto a
+                                função "Gravar_transacoes" recebe o cpf e os dados que serão armazenados(historico).
+                            '''
                             historico = f'Conta criada em {datetime.datetime.today()}'
                             Gravar_transacoes(cpf, historico)
                             enviar = 'False'
@@ -147,24 +180,33 @@ class ClientThread(threading.Thread):
                         flag = 0
                         cpf = recebe
                         print('mensagem recebida: '+ recebe)
+                        ''' A variavel "resposta" recebe uma tupla caso o cpf já esteja cadastrado contendo todos
+                            os dados do usuário. 
+
+                            Caso seja retornado um "vazio" não contem cadastro com aquele cpf.
+                        '''
                         resposta = Linha(cpf)
 
                         if resposta:
+                            # conversão de string para float
                             va = float(valor)
-                            saque = float(resposta[7])
-                            limite = float(resposta[6])
-                    
+                            saque = float(resposta[7]) # local 7 na tabela no banco de dados é o saldo
+                            limite = float(resposta[6]) # local 6 na tabela no banco de dados é o limite
+
                             if va <= saque:
                                 saque -= va
                                 saque = str(saque)
                                 historico = f'Saque realizado em {datetime.datetime.today()}'
+                                
                                 Gravar_transacoes(cpf, historico)
-                                Update_saldo(saque, resposta[0])
-                            
-                            
+                                Update_saldo(saque, resposta[0]) # atualiza saldo no banco de dados
+
+                                # retorna True caso o saque seja realizado
                                 enviar = 'True'
                                 self.csocket.send(enviar.encode())
                             else:
+
+                                # retorna false caso não seja possivel realizar saque 
                                 enviar = 'False'
                                 self.csocket.send(enviar.encode())
                         else:
@@ -190,7 +232,7 @@ class ClientThread(threading.Thread):
                         cpf = recebe
                         print('mensagem recebida: '+ recebe)
                     
-
+                        # segue a logica explicada na opção de sacar
                         dados_cpf = Linha(cpf)
 
                         va = float(valor)
@@ -230,24 +272,32 @@ class ClientThread(threading.Thread):
                         cpf = recebe
                         flag = 0
                         print('mensagem recebida: '+ recebe)
-                        
+                        # recebe dados do usuario
                         dados_cpf = Linha(cpf)
+                        #recebe dados do destino
                         dados_destino = Linha(destino)
 
+                        # verifica se o destino existe
                         if dados_destino == False:
                             enviar = 'None'
                             self.csocket.send(enviar.encode())
-
+                        
+                        # verifica se o saldo é maior ou igual a quantidade que deseja ser transferida
                         if float(dados_cpf[7]) >= float(valor):
                             saque = float(dados_cpf[7]) - float(valor)
-                            Update_saldo(saque, dados_cpf[0])
-
+                            Update_saldo(saque, dados_cpf[0]) # atualiza saldo do cliente que está fazendo a transferencia
+                            
+                            # recebe saldo do destino + valor que será transferido
                             destino_recebeu = float(dados_destino[7]) + float(valor)
-                            Update_saldo(destino_recebeu, dados_destino[0])
+                            #atualiza destino
+                            Update_saldo(destino_recebeu, dados_destino[0]) 
                             historico = f'Transferencia de {valor} para {destino} em {datetime.datetime.today()}'
+                            # grava transacoes do cliente
                             Gravar_transacoes(cpf, historico)
 
+                            
                             historico = f'Transferencia recebida de {valor} de {dados_cpf[1]} em {datetime.datetime.today()}'
+                            # grava transacoes do destino
                             Gravar_transacoes(dados_destino[2], historico)
 
                             enviar = 'True'
@@ -317,7 +367,7 @@ class ClientThread(threading.Thread):
         print("Client at ", clientAddress , " disconnected...")
 
 if __name__ == '__main__':
-    LOCALHOST = ' 10.180.46.151'
+    LOCALHOST = '10.180.46.151'
     PORT = 1235
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADOR, 1)
