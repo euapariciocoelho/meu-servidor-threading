@@ -2,11 +2,17 @@ import socket, threading
 import datetime
 from datetime import date
 from dados import *
-class ClientThread(threading.Thread):
 
+# Define uma classe ClientThread que herda de threading.Thread
+class ClientThread(threading.Thread):
+    
+    # Define o construtor da classe, que recebe o endereço IP e o objeto de soquete (socket) do cliente
     def __init__(self, clientAddress, clientsocket):
+        # Chama o construtor da classe Thread
         threading.Thread.__init__(self)
+        # Armazena o objeto de soquete (socket) do cliente em uma variável de instância
         self.csocket = clientsocket
+        # Imprime uma mensagem informando que uma nova conexão foi estabelecida
         print('Nova conexao: ', clientAddress)
     
     def run(self):
@@ -342,17 +348,25 @@ class ClientThread(threading.Thread):
         print("Client at ", clientAddress , " disconnected...")
 
 if __name__ == '__main__':
+    # Define o endereço IP do servidor e a porta que ele escutará
     LOCALHOST = '192.168.1.4'
     PORT = 1235
+    # Cria um objeto de soquete (socket) do tipo AF_INET e SOCK_STREAM
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADOR, 1)
+    
+    #Vincula o servidor ao endereço IP e porta especificados
     server.bind((LOCALHOST, PORT))
+    # Imprime uma mensagem informando que o servidor foi iniciado
     print("Servidor iniciado!")
+    # Imprime uma mensagem informando que o servidor está aguardando uma nova conexão
     print("Aguardando nova conexao...")
     while True:
         server.listen(1)
         clientsock, clientAddress = server.accept()
+        # Cria um objeto de thread para lidar com o cliente recém-conectado
         newthread = ClientThread(clientAddress, clientsock)
+        # Inicia a nova thread
         newthread.start()
 
     
