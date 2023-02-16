@@ -1,21 +1,9 @@
 import socket, threading
-from bd import armazenar
-import mysql.connector
-con = mysql.connector.connect(host='localhost', db='banco', user='root', password='123456')
-cursor = con.cursor()
-sql = """CREATE TABLE IF NOT EXISTS teste1 (id integer AUTO_INCREMENT PRIMARY KEY, nome text NOT NULL, cpf text NOT NULL, endereco text NOT NULL,nascimento text NOT NULL, senha VARCHAR(32) NOT NULL, limite text NOT NULL, saldo text NOT NULL);"""
-cursor.execute(sql)
-import sys
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 import datetime
 from datetime import date
-from dados import Verifica_se_existe, Armazenar, Linha, Update_saldo, Transacoes, Verificar_login
 from dados import *
-
-
-
 class ClientThread(threading.Thread):
+
     def __init__(self, clientAddress, clientsocket):
         threading.Thread.__init__(self)
         self.csocket = clientsocket
@@ -23,13 +11,11 @@ class ClientThread(threading.Thread):
     
     def run(self):
         ''' Recebe as mensagens do cliente e verifica qual opção foi escolhida. 
-        
-            variavel msg(str) armazena a mensagem. flag(int) auxilia para manter recebimento de mensagens na opção desejada.
         '''
         msg = ''
         flag = 0
         while True:
-            ''' Em cada volta do laço ele recebe uma menagem do cliente. A mensagem armazena na variavel recebe(str) '''
+            ''' Em cada volta do laço while ele recebe uma menagem do cliente. A mensagem armazena na variavel recebe(str) '''
             data = self.csocket.recv(1024)
             recebe = data.decode()
 
@@ -133,8 +119,7 @@ class ClientThread(threading.Thread):
                         print('mensagem recebida: '+ recebe)
                         saldo = recebe
                         flag = 0
-                        ''' A função "Verifica_se_existe" recebe o cpf(str) e faz a verificação no banco de dados
-                            se aquele cpf já está sendo usado.
+                        ''' A função "Verifica_se_existe" recebe o cpf(str) e faz a verificação no banco de dados se aquele cpf já está sendo usado.
 
                             Caso a mensagem retornada seja "True" é porque cpf já está cadastrado, "False" não está cadastrado.
                         '''
@@ -331,8 +316,6 @@ class ClientThread(threading.Thread):
                 
                     cpf = ''
                     flag = 6
-                   
-                    
                     self.csocket.send(enviar.encode())
                    
                 else:
@@ -340,8 +323,7 @@ class ClientThread(threading.Thread):
                         flag = 0
                         cpf = recebe
                         dados_cpf = Linha(cpf)
-                    
-                    
+                
                         if dados_cpf:
                             print(dados_cpf)
                             historico = f'Extrato tirado em {datetime.datetime.today()}'
@@ -372,3 +354,5 @@ if __name__ == '__main__':
         clientsock, clientAddress = server.accept()
         newthread = ClientThread(clientAddress, clientsock)
         newthread.start()
+
+    
