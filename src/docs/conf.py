@@ -9,9 +9,9 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-project = 'AP'
-copyright = '2023, APC'
-author = 'APC'
+project = 'POOII documentation'
+copyright = '2023, Francisco Aparicio, Pedro Tercio'
+author = 'Francisco Aparicio, Pedro Tercio'
 release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modulo1 &mdash; AP 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            AP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">modulo1</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modulo1</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">socket</span><span class="o">,</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="c1">#descomente a importação para funcionamento correto</span>
+<span class="c1">#from dados import *</span>
+
+<span class="c1"># Define uma classe ClientThread que herda de threading.Thread</span>
+<div class="viewcode-block" id="ClientThread"><a class="viewcode-back" href="../modulo1.html#modulo1.ClientThread">[docs]</a><span class="k">class</span> <span class="nc">ClientThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    
+    <span class="c1"># Define o construtor da classe, que recebe o endereço IP e o objeto de soquete (socket) do cliente</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clientAddress</span><span class="p">,</span> <span class="n">clientsocket</span><span class="p">):</span>
+        <span class="c1"># Chama o construtor da classe Thread</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Armazena o objeto de soquete (socket) do cliente em uma variável de instância</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span> <span class="o">=</span> <span class="n">clientsocket</span>
+        <span class="c1"># Imprime uma mensagem informando que uma nova conexão foi estabelecida</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Nova conexao: &#39;</span><span class="p">,</span> <span class="n">clientAddress</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="ClientThread.run"><a class="viewcode-back" href="../modulo1.html#modulo1.ClientThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39; Recebe as mensagens do cliente e verifica qual opção foi escolhida. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39; Em cada volta do laço while ele recebe uma menagem do cliente. A mensagem armazena na variavel recebe(str) &#39;&#39;&#39;</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+            <span class="n">recebe</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="w">            </span><span class="sd">&#39;&#39;&#39; Enquanto o cliente enviar mensagens diferentes de bye sua conexao permace ativa &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;bye&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39; Caso a mensagem não encerre a conexao, a mensagem recebida é exibida &#39;&#39;&#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;from &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="p">,</span><span class="n">recebe</span><span class="p">)</span>
+<span class="w">           </span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39; A sequencia de if/elif verifica a mensagem recebida e o flag &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;entrar&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+<span class="w">                </span><span class="sd">&#39;&#39;&#39; Caso a variavel recebe(str) seja &quot;entrar&quot; ele afirma a condição e entra no if.</span>
+
+<span class="sd">                    Em seguida informa a mensagem recebida. E na variavel enviar(str) recebe a mensagem </span>
+<span class="sd">                    que será retornada para o cliente.</span>
+
+<span class="sd">                    As variaveis cpf(str) e senha(str) recebe um &quot;vazio&quot; para atender as condições de entrada nos if</span>
+<span class="sd">                    para realizar o recebimento dos dados do cliente. </span>
+
+<span class="sd">                    O flag de cada uma das funções tem uma numeração indicando qual opção está sendo usada.</span>
+<span class="sd">                    &quot;entrar&quot; tem a numeração 1 e as outras seguem a contagem até o fim das opções disponiveis.</span>
+
+<span class="sd">                    No fim a flag recebe 0 para não ocorrer bugs.</span>
+
+<span class="sd">                    Isso ocorre para todas as opções (entrar, cadastrar, sacar, depositar, transferir, transacoes, extrato)</span>
+
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;entrar&#39;</span><span class="p">:</span>
+                
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;entrar recebido&#39;</span>
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">senha</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                  
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;cpf recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">senha</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">senha</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">if</span> <span class="n">Verificar_login</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">senha</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;True&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;False&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;cadastrar&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;cadastrar&#39;</span><span class="p">:</span>
+                
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;cadastrar recebido&#39;</span>
+                
+                    <span class="n">nome</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">endereco</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">nascimento</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">senha</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">limite</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">saldo</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">nome</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">nome</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;nome recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;cpf recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">endereco</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">endereco</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;endereco recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">nascimento</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">nascimento</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;nascimento recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">senha</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">senha</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;senha recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">limite</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">limite</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;limite recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">saldo</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">saldo</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="w">                        </span><span class="sd">&#39;&#39;&#39; A função &quot;Verifica_se_existe&quot; recebe o cpf(str) e faz a verificação no banco de dados se aquele cpf já está sendo usado.</span>
+
+<span class="sd">                            Caso a mensagem retornada seja &quot;True&quot; é porque cpf já está cadastrado, &quot;False&quot; não está cadastrado.</span>
+<span class="sd">                        &#39;&#39;&#39;</span>
+                        <span class="k">if</span> <span class="n">Verifica_se_existe</span><span class="p">(</span><span class="n">cpf</span><span class="p">):</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;True&#39;</span> 
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+<span class="w">                            </span><span class="sd">&#39;&#39;&#39; Após receber todos os dados é chamado a função &quot;Armazenar&quot; para gravar dados no banco de dados&#39;&#39;&#39;</span>
+                            <span class="n">Armazenar</span><span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">cpf</span><span class="p">,</span> <span class="n">endereco</span><span class="p">,</span> <span class="n">nascimento</span><span class="p">,</span> <span class="n">senha</span><span class="p">,</span> <span class="n">limite</span><span class="p">,</span> <span class="n">saldo</span><span class="p">)</span>
+
+<span class="w">                            </span><span class="sd">&#39;&#39;&#39; Historico da conta é armazenado em outra tabela no banco de dados, portanto a</span>
+<span class="sd">                                função &quot;Gravar_transacoes&quot; recebe o cpf e os dados que serão armazenados(historico).</span>
+<span class="sd">                            &#39;&#39;&#39;</span>
+                            <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Conta criada em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">)</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;False&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;sacar&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;sacar&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;sacar recebido&#39;</span>
+                
+                    <span class="n">valor</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">3</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+              
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">valor</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">valor</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;Valor recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+<span class="w">                        </span><span class="sd">&#39;&#39;&#39; A variavel &quot;resposta&quot; recebe uma tupla caso o cpf já esteja cadastrado contendo todos</span>
+<span class="sd">                            os dados do usuário. </span>
+
+<span class="sd">                            Caso seja retornado um &quot;vazio&quot; não contem cadastro com aquele cpf.</span>
+<span class="sd">                        &#39;&#39;&#39;</span>
+                        <span class="n">resposta</span> <span class="o">=</span> <span class="n">Linha</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">resposta</span><span class="p">:</span>
+                            <span class="c1"># conversão de string para float</span>
+                            <span class="n">va</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+                            <span class="n">saque</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">resposta</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="c1"># local 7 na tabela no banco de dados é o saldo</span>
+                            <span class="n">limite</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">resposta</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="c1"># local 6 na tabela no banco de dados é o limite</span>
+
+                            <span class="k">if</span> <span class="n">va</span> <span class="o">&lt;=</span> <span class="n">saque</span><span class="p">:</span>
+                                <span class="n">saque</span> <span class="o">-=</span> <span class="n">va</span>
+                                <span class="n">saque</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">saque</span><span class="p">)</span>
+                                <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Saque realizado em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                                
+                                <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">)</span>
+                                <span class="n">Update_saldo</span><span class="p">(</span><span class="n">saque</span><span class="p">,</span> <span class="n">resposta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># atualiza saldo no banco de dados</span>
+
+                                <span class="c1"># retorna True caso o saque seja realizado</span>
+                                <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;True&#39;</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                            <span class="k">else</span><span class="p">:</span>
+
+                                <span class="c1"># retorna false caso não seja possivel realizar saque </span>
+                                <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;False&#39;</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;depositar&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;depositar&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;depositar recebido&#39;</span>
+                
+                    <span class="n">valor</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">7</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">valor</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">valor</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;Valor recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    
+                        <span class="c1"># segue a logica explicada na opção de sacar</span>
+                        <span class="n">dados_cpf</span> <span class="o">=</span> <span class="n">Linha</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+
+                        <span class="n">va</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+                        <span class="n">saldo</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+                        <span class="n">total</span> <span class="o">=</span> <span class="n">va</span> <span class="o">+</span> <span class="n">saldo</span>
+
+                        <span class="n">Update_saldo</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">dados_cpf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    
+                        <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Deposito de </span><span class="si">{</span><span class="n">valor</span><span class="si">}</span><span class="s1"> em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                        <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">)</span>
+
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;True&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;transferir&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;transferir&#39;</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;transferir recebido&#39;</span>
+                
+                    <span class="n">valor</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">destino</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">4</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">valor</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">valor</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;Valor recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">destino</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">destino</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;destino recebido&#39;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                    <span class="k">elif</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                        <span class="c1"># recebe dados do usuario</span>
+                        <span class="n">dados_cpf</span> <span class="o">=</span> <span class="n">Linha</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+                        <span class="c1">#recebe dados do destino</span>
+                        <span class="n">dados_destino</span> <span class="o">=</span> <span class="n">Linha</span><span class="p">(</span><span class="n">destino</span><span class="p">)</span>
+
+                        <span class="c1"># verifica se o destino existe</span>
+                        <span class="k">if</span> <span class="n">dados_destino</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        
+                        <span class="c1"># verifica se o saldo é maior ou igual a quantidade que deseja ser transferida</span>
+                        <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">valor</span><span class="p">):</span>
+                            <span class="n">saque</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+                            <span class="n">Update_saldo</span><span class="p">(</span><span class="n">saque</span><span class="p">,</span> <span class="n">dados_cpf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># atualiza saldo do cliente que está fazendo a transferencia</span>
+                            
+                            <span class="c1"># recebe saldo do destino + valor que será transferido</span>
+                            <span class="n">destino_recebeu</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dados_destino</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+                            <span class="c1">#atualiza destino</span>
+                            <span class="n">Update_saldo</span><span class="p">(</span><span class="n">destino_recebeu</span><span class="p">,</span> <span class="n">dados_destino</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+                            <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Transferencia de </span><span class="si">{</span><span class="n">valor</span><span class="si">}</span><span class="s1"> para </span><span class="si">{</span><span class="n">destino</span><span class="si">}</span><span class="s1"> em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="c1"># grava transacoes do cliente</span>
+                            <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">)</span>
+
+                            
+                            <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Transferencia recebida de </span><span class="si">{</span><span class="n">valor</span><span class="si">}</span><span class="s1"> de </span><span class="si">{</span><span class="n">dados_cpf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="c1"># grava transacoes do destino</span>
+                            <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">dados_destino</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">historico</span><span class="p">)</span>
+
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;True&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;False&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;transacoes&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;transacoes&#39;</span><span class="p">:</span>
+                
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;transacoes recebido&#39;</span>
+                
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">5</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">dados_cpf</span> <span class="o">=</span> <span class="n">Transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+                        
+                        <span class="c1"># verifica se existe transacoes na conta do cliente</span>
+                        <span class="k">if</span> <span class="n">dados_cpf</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="c1"># envia uma string com todas as transacoes de um cliente</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;extrato&#39;</span> <span class="ow">or</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;extrato&#39;</span><span class="p">:</span>
+                
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mensagem recebida: &#39;</span><span class="o">+</span> <span class="n">recebe</span><span class="p">)</span>
+                    <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;extrato recebido&#39;</span>
+                
+                    <span class="n">cpf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">6</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                   
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cpf</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">cpf</span> <span class="o">=</span> <span class="n">recebe</span>
+                        <span class="n">dados_cpf</span> <span class="o">=</span> <span class="n">Linha</span><span class="p">(</span><span class="n">cpf</span><span class="p">)</span>
+                
+                        <span class="k">if</span> <span class="n">dados_cpf</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">)</span>
+                            <span class="n">historico</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Extrato tirado em </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="n">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">)</span>
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dados_cpf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">dados_cpf</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+                            
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            
+                            <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                            
+            <span class="k">elif</span> <span class="n">recebe</span> <span class="o">==</span> <span class="s1">&#39;sair&#39;</span><span class="p">:</span>
+                <span class="n">enviar</span> <span class="o">=</span> <span class="s1">&#39;sair&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">csocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">enviar</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client at &quot;</span><span class="p">,</span> <span class="n">clientAddress</span> <span class="p">,</span> <span class="s2">&quot; disconnected...&quot;</span><span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Define o endereço IP do servidor e a porta que ele escutará</span>
+    <span class="n">LOCALHOST</span> <span class="o">=</span> <span class="s1">&#39;192.168.1.4&#39;</span>
+    <span class="n">PORT</span> <span class="o">=</span> <span class="mi">1235</span>
+    <span class="c1"># Cria um objeto de soquete (socket) do tipo AF_INET e SOCK_STREAM</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="c1"># server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADOR, 1)</span>
+    
+    <span class="c1">#Vincula o servidor ao endereço IP e porta especificados</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">LOCALHOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+    <span class="c1"># Imprime uma mensagem informando que o servidor foi iniciado</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Servidor iniciado!&quot;</span><span class="p">)</span>
+    <span class="c1"># Imprime uma mensagem informando que o servidor está aguardando uma nova conexão</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Aguardando nova conexao...&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">clientsock</span><span class="p">,</span> <span class="n">clientAddress</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+        <span class="c1"># Cria um objeto de thread para lidar com o cliente recém-conectado</span>
+        <span class="n">newthread</span> <span class="o">=</span> <span class="n">ClientThread</span><span class="p">(</span><span class="n">clientAddress</span><span class="p">,</span> <span class="n">clientsock</span><span class="p">)</span>
+        <span class="c1"># Inicia a nova thread</span>
+        <span class="n">newthread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, APC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
