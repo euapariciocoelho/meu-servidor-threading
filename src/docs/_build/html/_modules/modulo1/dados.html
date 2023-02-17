@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modulo1.dados &mdash; AP 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">modulo1.dados</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modulo1.dados</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">import</span> <span class="nn">mysql.connector</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Verificar_login"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Verificar_login">[docs]</a><span class="k">def</span> <span class="nf">Verificar_login</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">senha</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Verifica se o CPF e a senha fornecidos correspondem a um registro no banco de dados. </span>
+<span class="sd">    </span>
+<span class="sd">    Parametros:</span>
+<span class="sd">    cpf (str): CPF do usuário a ser verificado.</span>
+<span class="sd">    senha (str): Senha do usuário a ser verificado.   </span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Retorna &#39;0&#39; caso o usuário não seja encontrado ou a senha esteja incorreta.</span>
+<span class="sd">        Retorna &#39;1&#39; caso o usuário seja encontrado e a senha esteja correta.&#39;&#39;&#39;</span>
+    
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM teste1 WHERE cpf = </span><span class="si">%s</span><span class="s1"> AND senha = MD5(</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">senha</span><span class="p">))</span>
+    
+
+    <span class="n">cont</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+    
+
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+    
+        <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">cont</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+    <span class="k">return</span> <span class="n">cont</span></div>
+
+
+<div class="viewcode-block" id="Verifica_se_existe"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Verifica_se_existe">[docs]</a><span class="k">def</span> <span class="nf">Verifica_se_existe</span><span class="p">(</span><span class="n">cpf</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Verifica se um CPF existe no banco de dados.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Esta função realiza uma busca em uma tabela chamada teste1 em um banco de dados chamado de banco, </span>
+<span class="sd">    para verificar se um CPF específico existe na tabela. Se existir, a função retorna True.</span>
+<span class="sd">    Caso contrário, retorna None.</span>
+<span class="sd">    </span>
+<span class="sd">    Parametros:</span>
+<span class="sd">        cpf (str): Uma string que representa o CPF a ser procurado.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    True se o CPF foi encontrado, None caso contrário.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># conexão a um banco de dados</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+    <span class="c1"># criado um cursor para a execução de comandos Sql</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="c1"># consulta para buscar todos os registros existentes na tabela teste1.</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * from teste1&quot;</span><span class="p">)</span>
+    <span class="n">existe</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cpf</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">tupla</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="n">existe</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">existe</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># irá retornar verdadeiro caso o cpf seja encontrado</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="c1"># retornado não existente caso não seja encontrado</span>
+
+<div class="viewcode-block" id="Armazenar"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Armazenar">[docs]</a><span class="k">def</span> <span class="nf">Armazenar</span><span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">cpf</span><span class="p">,</span> <span class="n">endereco</span><span class="p">,</span> <span class="n">nascimento</span><span class="p">,</span> <span class="n">senha</span><span class="p">,</span> <span class="n">limite</span><span class="p">,</span> <span class="n">saldo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Insere informações do cliente na tabela &quot;teste1&quot; do banco de dados MySQL.</span>
+<span class="sd">    </span>
+<span class="sd">    Parâmetros:</span>
+<span class="sd">    nome (str): O nome do cliente.</span>
+<span class="sd">    cpf (str): O CPF do cliente.</span>
+<span class="sd">    endereco (str): O endereço do cliente.</span>
+<span class="sd">    nascimento (str): A data de nascimento do cliente.</span>
+<span class="sd">    senha (str): A senha do cliente, que será armazenada criptografada usando o algoritmo MD5.</span>
+<span class="sd">    limite (str): O limite de crédito do cliente.</span>
+<span class="sd">    saldo (str): O saldo do cliente.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS teste1 (id integer AUTO_INCREMENT PRIMARY KEY, nome text NOT NULL, cpf text NOT NULL, endereco text NOT NULL,nascimento text NOT NULL, senha VARCHAR(32) NOT NULL, limite text NOT NULL, saldo text NOT NULL);&quot;&quot;&quot;</span>
+
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO teste1(nome, cpf, endereco, nascimento, senha, limite, saldo) VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, MD5(</span><span class="si">%s</span><span class="s2">), </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">nome</span><span class="p">,</span> <span class="n">cpf</span><span class="p">,</span> <span class="n">endereco</span><span class="p">,</span> <span class="n">nascimento</span><span class="p">,</span> <span class="n">senha</span><span class="p">,</span> <span class="n">limite</span><span class="p">,</span> <span class="n">saldo</span><span class="p">))</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+    <span class="c1"># a função confirma as alterações no banco de dados </span>
+
+<div class="viewcode-block" id="Linha"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Linha">[docs]</a><span class="k">def</span> <span class="nf">Linha</span><span class="p">(</span><span class="n">cpf</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; definição de uma função chamada de linha</span>
+<span class="sd">    </span>
+<span class="sd">    Parametros:</span>
+<span class="sd">    cpf(str): Uma string que representa o CPF a ser buscado.</span>
+<span class="sd">    </span>
+<span class="sd">    A função irá retornar a linha da tabela que contém o CPF passado como argumento,</span>
+<span class="sd">    caso ela exista, ou retorna False caso contrário. &#39;&#39;&#39;</span>
+    
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM teste1&quot;</span><span class="p">)</span>
+
+    <span class="n">tupla</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; variável que irá armazenar a linha da tabela que contém o CPF passado como</span>
+<span class="sd">    argumento, caso exista &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cpf</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">tupla</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">tupla</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># irá ser retornado falso caso o cpf passado como argumento não seja encontrado na tabela de teste1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tupla</span></div>
+    <span class="c1"># retornado a linha da tabela que contém o CPF passado como argumento</span>
+
+
+<div class="viewcode-block" id="Update_saldo"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Update_saldo">[docs]</a><span class="k">def</span> <span class="nf">Update_saldo</span><span class="p">(</span><span class="n">valor</span><span class="p">,</span> <span class="n">onde</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Criado uma função para a definição da atualização de saldo</span>
+<span class="sd">    </span>
+<span class="sd">    Parametros:</span>
+<span class="sd">    valor (str): valor de atualização de saldo</span>
+<span class="sd">    onde (str): onde será consultado o saldo para atualização&#39;&#39;&#39;</span>
+    
+    
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE teste1 SET saldo = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;WHERE id = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">onde</span><span class="p">))</span>
+    
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Gravar_transacoes"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Gravar_transacoes">[docs]</a><span class="k">def</span> <span class="nf">Gravar_transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">):</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS transacoes (id integer AUTO_INCREMENT PRIMARY KEY, cpf_user text NOT NULL, transacoes text NOT NULL);&quot;&quot;&quot;</span>
+
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO transacoes (cpf_user, transacoes) VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">cpf</span><span class="p">,</span> <span class="n">historico</span><span class="p">))</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Transacoes"><a class="viewcode-back" href="../../modulo1.html#modulo1.dados.Transacoes">[docs]</a><span class="k">def</span> <span class="nf">Transacoes</span><span class="p">(</span><span class="n">cpf</span><span class="p">):</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="s1">&#39;banco&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM transacoes&quot;</span><span class="p">)</span>
+
+    <span class="n">tupla</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;tulpa é uma variavel(str) que será concatenada com todas as strings salvas na tabela transacoes.</span>
+<span class="sd">    </span>
+<span class="sd">        Durante o for, a cada interação é concatenado uma string com uma &quot;,&quot; (virgula) para quando a string</span>
+<span class="sd">        ser retornada para a tela do cliente o algoritmo &quot;fatiar&quot; a string por cada virgula, utilizando split.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cpf</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">tupla</span> <span class="o">+=</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">tupla</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">tupla</span> <span class="c1"># retornando apenas a coluna transacoes na tabela transacoes</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, APC.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
